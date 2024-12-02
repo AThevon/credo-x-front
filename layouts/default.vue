@@ -1,5 +1,5 @@
 <template>
-	<div class="font-main h-screen">
+	<div class="h-screen flex flex-col">
 		<!-- <BurgerMenu :links="links" /> -->
 		<nav class="relative flex justify-between items-center my-4 px-6">
 			<NuxtLink
@@ -8,24 +8,12 @@
 			>
 				<h1 class="text-2xl mb-[2px] font-bold font-second">CredoX</h1>
 			</NuxtLink>
-			<ul class="flex gap-5 absolute inset-x-0 mx-auto w-max">
-				<li v-for="link in links" :key="link.to">
-					<NuxtLink
-						:to="link.to"
-						class="flex gap-2 w-fit text-xl transition-all opacity-60 hover:opacity-100 hover:scale-[1.05] active:scale-100"
-						:class="{
-							'!opacity-100 font-bold': $route.path === link.to,
-						}"
-					>
-						{{ link.name }}
-					</NuxtLink>
-				</li>
-			</ul>
 			<div v-if="!isAuthenticated" class="flex space-x-2">
 				<UButton to="/register" class="text-sm"> S'inscrire </UButton>
 				<UButton to="/login" class="text-sm"> Se connecter </UButton>
 			</div>
 			<div v-else class="flex space-x-2">
+				<h3 v-if="user" class="text-sm">Bonjour, {{ user.name }}</h3>
 				<UButton to="/profile" class="text-sm"> Mon compte </UButton>
 				<UButton @click="logout" class="text-sm"> Se déconnecter </UButton>
 			</div>
@@ -33,10 +21,20 @@
 		<main class="h-full">
 			<slot />
 		</main>
-		<footer class="relative flex justify-center items-center h-16">
-			<p class="absolute inset-x-0 text-sm text-center text-gray-500">
-				&copy; 2021 CredoX. All rights reserved.
-			</p>
+		<footer class="relative flex justify-center items-center h-10">
+			<div class="absolute inset-x-0 text-sm text-center text-gray-500">
+				<UButton to="/terms" variant="link" class="p-0 mx-2 !text-gray-500"
+					>Conditions générales</UButton
+				>
+				|
+				<UButton to="/privacy" variant="link" class="p-0 mx-2 !text-gray-500"
+					>Politique de confidentialité</UButton
+				>
+				|
+				<p class="inline p-0 mx-2 text-gray-500">
+					&copy; 2021 CredoX. All rights reserved.
+				</p>
+			</div>
 			<div class="z-10 ml-auto mr-4 mb-2">
 				<ThemeToggle />
 			</div>
@@ -45,17 +43,8 @@
 </template>
 
 <script lang="ts" setup>
-	export type Link = {
-		name: string;
-		to: string;
-	};
+	import type { UserType } from '~/types';
 
 	const { logout, isAuthenticated } = useSanctumAuth();
-
-	const links: Link[] = [
-		{ name: 'Accueil', to: '/' },
-		{ name: 'À propos', to: '/about' },
-	];
+	const user = computed(() => useSanctumUser<UserType>().value?.user);
 </script>
-
-<style></style>

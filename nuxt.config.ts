@@ -31,13 +31,13 @@ export default defineNuxtConfig({
 		redirect: {
 			keepRequestedRoute: false,
 			onLogin: '/',
-			onLogout: '/',
+			onLogout: '/login',
 			onAuthOnly: '/login',
 			onGuestOnly: '/',
 		},
 		globalMiddleware: {
-			enabled: false,
-			allow404WithoutAuth: true,
+			enabled: true,
+			allow404WithoutAuth: false,
 		},
 		logLevel: 3,
 		appendPlugin: false,
@@ -45,6 +45,7 @@ export default defineNuxtConfig({
 	runtimeConfig: {
 		public: {
 			baseUrl: process.env.BASE_URL,
+         contactEmail: process.env.CONTACT_EMAIL,
 			sanctum: {
 				baseUrl: process.env.BASE_URL || 'http://localhost:8000',
 			},
@@ -53,15 +54,25 @@ export default defineNuxtConfig({
 	colorMode: {
 		preference: 'light',
 	},
-	// fonts: {
-	// 	google: {
-	// 		families: ['Montserrat', 'New Amsterdam'],
-	// 	},
-	// },
 	app: {
 		pageTransition: {
 			name: 'slide-fade-y',
 			mode: 'out-in',
+		},
+	},
+	fonts: {
+		defaults: {
+			weights: [400],
+			styles: ['normal', 'italic'],
+			subsets: [
+				'cyrillic-ext',
+				'cyrillic',
+				'greek-ext',
+				'greek',
+				'vietnamese',
+				'latin-ext',
+				'latin',
+			],
 		},
 	},
 });
