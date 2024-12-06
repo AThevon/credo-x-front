@@ -9,13 +9,38 @@
 				<h1 class="text-2xl mb-[2px] font-bold font-second">CredoX</h1>
 			</NuxtLink>
 			<div v-if="!isAuthenticated" class="flex space-x-2">
-				<UButton to="/register" class="text-sm"> S'inscrire </UButton>
-				<UButton to="/login" class="text-sm"> Se connecter </UButton>
+				<UButton
+					padded
+					to="/register"
+					label="S'inscrire"
+					size="lg"
+					class="btn !bg-neutral-800 hover:!bg-neutral-700 dark:!bg-neutral-700 hover:dark:!bg-neutral-800"
+				/>
+				<UButton
+					padded
+					to="/login"
+					label="Se connecter"
+					size="lg"
+					class="btn"
+				/>
 			</div>
 			<div v-else class="flex space-x-2">
 				<h3 v-if="user" class="text-sm">Bonjour, {{ user.name }}</h3>
-				<UButton to="/profile" class="text-sm"> Mon compte </UButton>
-				<UButton @click="logout" class="text-sm"> Se déconnecter </UButton>
+				<UButton
+					padded
+					to="/profile"
+					label="Mon compte"
+					size="lg"
+					class="btn"
+				/>
+				<UButton
+					padded
+					to="/register"
+					label="Se déconnecter"
+					size="lg"
+					@click="logout"
+					class="btn !bg-neutral-800 hover:!bg-neutral-700 dark:!bg-neutral-700 hover:dark:!bg-neutral-800"
+				/>
 			</div>
 		</nav>
 		<main class="h-full">

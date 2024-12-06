@@ -24,4 +24,5 @@ export default <Partial<Config>>{
 			},
 		},
 	},
+	plugins: [require('tailwind-scrollbar')],
 };

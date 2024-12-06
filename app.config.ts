@@ -1,9 +1,17 @@
 export default defineAppConfig({
 	ui: {
 		primary: 'cerulean-blue',
-      secondary: 'cyan',
+		secondary: 'cyan',
 		gray: 'neutral',
-		blue: 'cyan',
+		button: {
+			default: {
+				color: 'primary',
+			},
+			colors: {
+				secondary: 'cyan', 
+				danger: 'red',
+			},
+		},
 		notifications: {
 			position: 'top-[unset] bottom-0',
 		},
