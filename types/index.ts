@@ -1,5 +1,3 @@
-import Transaction from '~/components/Transaction.vue';
-
 export type UserType = {
 	user: {
 		id: number;
@@ -9,7 +7,7 @@ export type UserType = {
 };
 
 export type CategoryType = {
-  id: number;
+	id: number;
 	name: string;
 	type: string;
 	is_default: boolean;
@@ -20,7 +18,8 @@ export type CategoryType = {
 export type TransactionType = {
 	id: number;
 	amount: number;
-	description: string;
-	category: string;
-	date: string;
+	title: string;
+   category: CategoryType;
+	category_id: string;
+	transaction_date: string;
 };

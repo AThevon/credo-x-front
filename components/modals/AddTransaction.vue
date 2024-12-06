@@ -19,7 +19,7 @@
 				<USelect
 					size="lg"
 					id="category"
-					v-model="state.category"
+					v-model="state.category_id"
 					:options="
 						categories.map((category) => ({
 							label: category.name,
@@ -29,7 +29,12 @@
 				/>
 			</UFormGroup>
 			<UFormGroup label="Date" name="date">
-				<UInput size="lg" id="date" v-model="state.date" type="date" />
+				<UInput
+					size="lg"
+					id="date"
+					v-model="state.transaction_date"
+					type="date"
+				/>
 			</UFormGroup>
 
 			<UButton size="lg" padded block label="Ajouter" type="submit" />
@@ -45,25 +50,56 @@
 		typeLabel: String,
 	});
 
+	const toast = useToast();
 	const categories = ref<CategoryType[]>([]);
 
 	const state = reactive({
 		title: '',
 		amount: 0,
-		category: 0,
-		date: '',
+		category_id: 0,
+		transaction_date: '',
 	});
 
 	fetching(`/categories/${props.type}`).then((res: any) => {
-		console.log(res);
 		categories.value = res;
 
 		if (categories.value.length > 0) {
-			state.category = categories.value[0].id;
+			state.category_id = categories.value[0].id;
 		}
 	});
 
-	const handleSubmit = () => {
-		console.log(state);
+	const emit = defineEmits(['transactionAdded']);
+
+	const handleSubmit = async () => {
+		try {
+			const response: any = await fetching('/transactions', {
+				method: 'POST',
+				body: state,
+			});
+			toast.add({
+				title: 'Transaction ajoutée',
+				description: 'La transaction a été ajoutée avec succès.',
+				icon: 'i-octicon-desktop-download-24',
+				color: 'green',
+			});
+
+			emit('transactionAdded', response.transaction);
+
+			// reset state
+			Object.assign(state, {
+				title: '',
+				amount: 0,
+				category_id: categories.value.length > 0 ? categories.value[0].id : 0,
+				date: '',
+			});
+		} catch (error) {
+			toast.add({
+				title: 'Erreur lors de l’inscription',
+				description: 'Veuillez vérifier vos informations et réessayer.',
+				icon: 'i-octicon-alert-24',
+				color: 'red',
+			});
+			console.error(error);
+		}
 	};
 </script>

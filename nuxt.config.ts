@@ -3,7 +3,7 @@ export default defineNuxtConfig({
 	compatibilityDate: '2024-11-30',
 	devtools: { enabled: true },
 	tailwindcss: {
-    cssPath: '~/assets/css/main.css',
+		cssPath: '~/assets/css/main.css',
 	},
 	modules: [
 		'@nuxt/ui',
@@ -11,6 +11,7 @@ export default defineNuxtConfig({
 		'@nuxt/fonts',
 		'nuxt-auth-sanctum',
 		'@nuxtjs/tailwindcss',
+		'dayjs-nuxt',
 	],
 	sanctum: {
 		mode: 'cookie',
@@ -54,6 +55,10 @@ export default defineNuxtConfig({
 			},
 		},
 	},
+   dayjs: {
+      locales: ['fr', 'en'], // Charger les locales nécessaires
+      defaultLocale: 'fr', // Définit la locale par défaut
+    },
 	colorMode: {
 		preference: 'light',
 	},

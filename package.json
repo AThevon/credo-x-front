@@ -15,6 +15,7 @@
     "@nuxt/image": "1.8.1",
     "@nuxt/ui": "^2.19.2",
     "@nuxtjs/tailwindcss": "6.12.2",
+    "dayjs-nuxt": "2.1.11",
     "nuxt": "^3.14.1592",
     "nuxt-auth-sanctum": "0.5.2",
     "tailwind-scrollbar": "^3.1.0"

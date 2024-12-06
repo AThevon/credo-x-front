@@ -12,21 +12,24 @@
 				@click="isOpen = true"
 			/>
 			<UModal v-model="isOpen">
-				<AddTransaction :type :typeLabel />
+				<AddTransaction @transactionAdded="addTransaction" :type :typeLabel />
 			</UModal>
 		</div>
 		<div
 			class="flex flex-col gap-2 mt-2 overflow-auto h-[65vh] rounded-lg scrollbar-thin scrollbar-thumb-rounded-full scrollbar-track-rounded-full"
 		>
-			<Transaction v-for="transaction in test" :key="transaction" />
+			<Transaction
+				v-for="transaction in transactions"
+				:key="transaction.id"
+				:transaction="transaction"
+			/>
 		</div>
 	</div>
 </template>
 
 <script lang="ts" setup>
+	import type { TransactionType } from '~/types';
 	import AddTransaction from './modals/AddTransaction.vue';
-
-	const test = ['coy', 'coy', 'coy'];
 
 	const props = defineProps({
 		type: String,
@@ -37,4 +40,19 @@
 	);
 
 	const isOpen = ref(false);
+
+	const transactions = ref<TransactionType[]>([]);
+
+	onMounted(() => {
+		fetching('/transactions').then((res: any) => {
+			transactions.value = res.filter(
+				(transaction: TransactionType) => transaction.category.type === props.type,
+			);
+		});
+	});
+
+	const addTransaction = (newTransaction: TransactionType) => {
+		transactions.value.push(newTransaction);
+		isOpen.value = false;
+	};
 </script>
