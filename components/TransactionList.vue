@@ -9,10 +9,15 @@
 			<UButton
 				:label="`Ajouter une ${typeLabel}`"
 				size="lg"
-				@click="isOpen = true"
+				@click="isAddModalOpen = true"
+            title="Ajouter une transaction"
 			/>
-			<UModal v-model="isOpen">
-				<AddTransaction @transactionAdded="addTransaction" :type :typeLabel />
+			<UModal v-model="isAddModalOpen">
+				<AddTransaction
+					:type="type"
+					:typeLabel="typeLabel"
+					@addedTransaction="addedTransaction"
+				/>
 			</UModal>
 		</div>
 		<div
@@ -22,8 +27,18 @@
 				v-for="transaction in filteredTransactions"
 				:key="transaction.id"
 				:transaction="transaction"
+				:isExpanded="expandedTransaction === transaction.id"
+				@toggle="toggleTransaction"
+				@openEditModal="openEditModal"
 			/>
 		</div>
+		<UModal v-model="isEditModalOpen" v-if="transactionToEdit">
+			<EditTransaction
+				:transaction="transactionToEdit"
+				@openEditModal="openEditModal"
+				@updatedTransaction="updatedTransaction"
+			/>
+		</UModal>
 	</div>
 </template>
 
@@ -32,6 +47,8 @@
 	import { useTransactionStore } from '@/stores/TransactionsStore';
 	import type { TransactionType } from '~/types';
 	import AddTransaction from './modals/AddTransaction.vue';
+	import EditTransaction from './modals/EditTransaction.vue';
+   import gsap from 'gsap';
 
 	const props = defineProps({
 		type: String,
@@ -41,29 +58,60 @@
 		props.type === 'income' ? 'entrée' : 'sortie',
 	);
 
-	const isOpen = ref<boolean>(false);
+	const isAddModalOpen = ref(false); // État pour la modale d'ajout
+	const isEditModalOpen = ref(false); // État pour la modale d'édition
+	const transactionToEdit = ref<TransactionType | null>(null); // Transaction sélectionnée pour l'édition
 
-	// Utiliser le store
 	const transactionStore = useTransactionStore();
 
 	// Transactions filtrées selon le type
 	const filteredTransactions = computed(() =>
 		transactionStore.transactions
-			.filter(
-				(transaction: TransactionType) =>
-					transaction.category.type === props.type,
-			)
-			.sort((a, b) => {
-				return (
+			.filter((transaction) => transaction.category.type === props.type)
+			.sort(
+				(a, b) =>
 					new Date(a.transaction_date).getTime() -
-					new Date(b.transaction_date).getTime()
-				);
-			}),
+					new Date(b.transaction_date).getTime(),
+			),
 	);
 
-	// Ajouter une transaction
-	const addTransaction = () => {
-		transactionStore.addTransaction();
-		isOpen.value = false;
+	const expandedTransaction = ref<number | null>(null);
+
+	const toggleTransaction = (transactionId: number) => {
+		expandedTransaction.value =
+			expandedTransaction.value === transactionId ? null : transactionId;
 	};
+
+	const openEditModal = (transaction: TransactionType) => {
+		transactionToEdit.value = transaction;
+		isEditModalOpen.value = true;
+	};
+
+	const updatedTransaction = () => {
+		isEditModalOpen.value = false;
+		transactionToEdit.value = null;
+	};
+
+	const addedTransaction = () => {
+		isAddModalOpen.value = false;
+	};
+
+	const animateTransactions = async () => {
+		await nextTick(); // Assure que les éléments DOM sont rendus
+		gsap.fromTo(
+			'.transaction', // Utilise une classe commune pour toutes les transactions
+			{ opacity: 0, y: 50 },
+			{
+				opacity: 1,
+				y: 0,
+				duration: 0.5,
+				stagger: 0.1, // Ajoute un décalage progressif
+				ease: 'power2.out',
+			},
+		);
+	};
+
+	onMounted(() => {
+		animateTransactions();
+	});
 </script>

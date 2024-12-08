@@ -3,13 +3,13 @@
 		<h2 class="title text-6xl my-4 text-gray-700">Total</h2>
 		<div class="flex justify-between gap-4 items-center my-4">
 			<div>
-				<p class="text-xl text-green-500 font-bold">Total Entrées</p>
+				<p class="text-xl text-green-500 font-bold">Entrées</p>
 				<p class="text-2xl font-semibold">
 					{{ formatCurrency(totals.income) }}
 				</p>
 			</div>
 			<div>
-				<p class="text-xl text-red-500 font-bold">Total Sorties</p>
+				<p class="text-xl text-red-500 font-bold">Sorties</p>
 				<p class="text-2xl font-semibold">
 					{{ formatCurrency(totals.expense) }}
 				</p>

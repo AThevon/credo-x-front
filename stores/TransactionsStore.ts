@@ -11,15 +11,37 @@ export const useTransactionStore = defineStore('transaction', {
 			const [allTransactions, totalData]: [TransactionType[], TotalType] =
 				await Promise.all([
 					fetching('/transactions') as Promise<TransactionType[]>,
-					fetching('/transactions/totals') as Promise<TotalType>,
+					fetching('/transactions-totals') as Promise<TotalType>,
 				]);
 
 			this.transactions = allTransactions;
 			this.totals = totalData;
 		},
 
-		async addTransaction() {
-			await this.fetchAllData();
+		async addTransaction(newTransaction: Partial<TransactionType>) {
+			await fetching('/transactions', {
+				method: 'POST',
+				body: newTransaction,
+			});
+			await this.fetchAllData(); // Rafraîchit les données
+		},
+
+		async editTransaction(
+			transactionId: number,
+			updatedTransaction: Partial<TransactionType>,
+		) {
+			await fetching(`/transactions/${transactionId}`, {
+				method: 'PUT',
+				body: updatedTransaction,
+			});
+			await this.fetchAllData(); // Rafraîchit les données
+		},
+
+		async deleteTransaction(transactionId: number) {
+			await fetching(`/transactions/${transactionId}`, {
+				method: 'DELETE',
+			});
+			await this.fetchAllData(); // Rafraîchit les données
 		},
 	},
 });

@@ -20,7 +20,7 @@ export type TransactionType = {
 	amount: number;
 	title: string;
 	category: CategoryType;
-	category_id: string;
+	category_id: number;
 	transaction_date: string;
 };
 

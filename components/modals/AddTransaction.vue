@@ -9,11 +9,24 @@
 			<h2 class="title text-3xl">Ajouter une {{ typeLabel }}</h2>
 		</template>
 		<UForm :state="state" @submit="handleSubmit" class="flex flex-col gap-4">
-			<UFormGroup label="Titre" name="title">
-				<UInput size="lg" id="title" v-model="state.title" type="title" />
-			</UFormGroup>
 			<UFormGroup label="Montant" name="amount">
-				<UInput size="lg" id="amount" v-model="state.amount" type="number" />
+				<UInput
+					size="lg"
+					id="amount"
+					v-model="state.amount"
+					type="number"
+					required
+					min="1"
+				/>
+			</UFormGroup>
+			<UFormGroup label="Titre" name="title">
+				<UInput
+					size="lg"
+					id="title"
+					v-model="state.title"
+					type="text"
+					required
+				/>
 			</UFormGroup>
 			<UFormGroup label="Catégorie" name="category">
 				<USelect
@@ -34,6 +47,7 @@
 					id="date"
 					v-model="state.transaction_date"
 					type="date"
+					required
 				/>
 			</UFormGroup>
 
@@ -43,24 +57,31 @@
 </template>
 
 <script lang="ts" setup>
-	import type { CategoryType } from '~/types';
+	import { ref, reactive, onMounted } from 'vue';
+	import { useTransactionStore } from '@/stores/TransactionsStore';
+	import type { CategoryType, TransactionType } from '~/types';
 
 	const props = defineProps({
 		type: String,
 		typeLabel: String,
 	});
 
-	const toast = useToast();
-	const categories = ref<CategoryType[]>([]);
+	const emit = defineEmits(['addedTransaction']);
 
-	const state = reactive({
-		title: '',
+	const toast = useToast();
+	const transactionStore = useTransactionStore();
+
+	const categories = ref<CategoryType[]>([]);
+	const state = reactive<Partial<TransactionType>>({
 		amount: 0,
+		title: '',
 		category_id: 0,
 		transaction_date: '',
 	});
 
-	fetching(`/categories/${props.type}`).then((res: any) => {
+	// Charger les catégories
+	onMounted(async () => {
+		const res: any = await fetching(`/categories/${props.type}`);
 		categories.value = res;
 
 		if (categories.value.length > 0) {
@@ -68,14 +89,10 @@
 		}
 	});
 
-	const emit = defineEmits(['transactionAdded']);
-
+	// Soumettre le formulaire
 	const handleSubmit = async () => {
 		try {
-			const response: any = await fetching('/transactions', {
-				method: 'POST',
-				body: state,
-			});
+			await transactionStore.addTransaction(state); // Appelle la méthode du store
 			toast.add({
 				title: 'Transaction ajoutée',
 				description: 'La transaction a été ajoutée avec succès.',
@@ -83,19 +100,19 @@
 				color: 'green',
 			});
 
-			emit('transactionAdded', response.transaction);
-
-			// reset state
+			// Réinitialiser l'état
 			Object.assign(state, {
 				title: '',
 				amount: 0,
 				category_id: categories.value.length > 0 ? categories.value[0].id : 0,
-				date: '',
+				transaction_date: '',
 			});
+
+			emit('addedTransaction');
 		} catch (error) {
 			toast.add({
-				title: 'Erreur lors de l’inscription',
-				description: 'Veuillez vérifier vos informations et réessayer.',
+				title: 'Erreur lors de l’ajout',
+				description: 'Une erreur est survenue, veuillez réessayer.',
 				icon: 'i-octicon-alert-24',
 				color: 'red',
 			});
