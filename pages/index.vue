@@ -8,11 +8,19 @@
 			<div class="w-full">
 				<TransactionList type="expense" />
 			</div>
-      <div class="w-1/2">
-        <TotalCard />
-      </div>
+			<div class="w-1/2">
+				<TotalCard />
+			</div>
 		</div>
 	</div>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+	import { useTransactionStore } from '@/stores/TransactionsStore';
+
+	const transactionStore = useTransactionStore();
+
+	onMounted(() => {
+		transactionStore.fetchAllData();
+	});
+</script>

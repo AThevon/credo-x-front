@@ -9,9 +9,7 @@
 				>€</span
 			>
 		</p>
-		<p class="text-neutral-600 italic">
-			{{ formattedDate }}
-		</p>
+		<p class="text-neutral-600 italic">Le {{ formattedDate }}</p>
 		<div
 			class="h-full w-1 absolute"
 			:class="{
@@ -33,7 +31,6 @@
 
 	const dayjs = useDayjs();
 	const formattedDate = computed(() =>
-		dayjs(props.transaction.transaction_date)
-			.format('DD MMMM YYYY'),
+		dayjs(props.transaction.transaction_date).format('DD'),
 	);
 </script>

@@ -19,7 +19,13 @@ export type TransactionType = {
 	id: number;
 	amount: number;
 	title: string;
-   category: CategoryType;
+	category: CategoryType;
 	category_id: string;
 	transaction_date: string;
+};
+
+export type TotalType = {
+	income: number;
+	expense: number;
+	balance: number;
 };

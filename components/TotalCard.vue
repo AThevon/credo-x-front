@@ -4,36 +4,42 @@
 		<div class="flex justify-between gap-4 items-center my-4">
 			<div>
 				<p class="text-xl text-green-500 font-bold">Total Entrées</p>
-				<p class="text-2xl font-semibold">{{ formatCurrency(totalEntries) }}</p>
+				<p class="text-2xl font-semibold">
+					{{ formatCurrency(totals.income) }}
+				</p>
 			</div>
 			<div>
 				<p class="text-xl text-red-500 font-bold">Total Sorties</p>
-				<p class="text-2xl font-semibold">{{ formatCurrency(totalExits) }}</p>
+				<p class="text-2xl font-semibold">
+					{{ formatCurrency(totals.expense) }}
+				</p>
 			</div>
 		</div>
-    <UDivider />
+		<UDivider />
 		<div class="pt-4">
 			<p class="text-xl font-bold">Différence</p>
 			<p
 				class="text-3xl font-semibold"
-				:class="difference >= 0 ? 'text-green-500' : 'text-red-500'"
+				:class="totals.balance >= 0 ? 'text-green-500' : 'text-red-500'"
 			>
-				{{ formatCurrency(difference) }}
+				<!-- {{ formatCurrency(totals.balance) }} -->
+				{{ formatCurrency(totals.balance) }}
 			</p>
 		</div>
 	</div>
 </template>
 
 <script lang="ts" setup>
-	const difference = ref(50);
-	const totalEntries = ref(1000);
-	const totalExits = ref(950);
+	import { useTransactionStore } from '@/stores/TransactionsStore';
+
+	const transactionStore = useTransactionStore();
+	const totals = computed(() => transactionStore.totals);
 
 	// Fonction utilitaire pour formater en devise
-	const formatCurrency = (value: number): string => {
+	function formatCurrency(value: number): string {
 		return value.toLocaleString('fr-FR', {
 			style: 'currency',
 			currency: 'EUR',
 		});
-	};
+	}
 </script>

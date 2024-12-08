@@ -12,6 +12,7 @@ export default defineNuxtConfig({
 		'nuxt-auth-sanctum',
 		'@nuxtjs/tailwindcss',
 		'dayjs-nuxt',
+		'@pinia/nuxt',
 	],
 	sanctum: {
 		mode: 'cookie',
@@ -55,10 +56,10 @@ export default defineNuxtConfig({
 			},
 		},
 	},
-   dayjs: {
-      locales: ['fr', 'en'], // Charger les locales nécessaires
-      defaultLocale: 'fr', // Définit la locale par défaut
-    },
+	dayjs: {
+		locales: ['fr', 'en'], // Charger les locales nécessaires
+		defaultLocale: 'fr', // Définit la locale par défaut
+	},
 	colorMode: {
 		preference: 'light',
 	},
