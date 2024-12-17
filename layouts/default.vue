@@ -8,7 +8,7 @@
 			>
 				<h1 class="text-2xl mb-[2px] font-bold font-second">CredoX</h1>
 			</NuxtLink>
-			<div v-if="!isAuthenticated" class="flex space-x-2">
+			<div class="flex space-x-2">
 				<UButton
 					padded
 					to="/register"
@@ -24,8 +24,8 @@
 					class="btn"
 				/>
 			</div>
-			<div v-else class="flex space-x-2">
-				<h3 v-if="user" class="text-sm">Bonjour, {{ user.name }}</h3>
+			<div class="flex space-x-2">
+				<!-- <h3 v-if="user" class="text-sm">Bonjour, {{ user.name }}</h3> -->
 				<UButton
 					padded
 					to="/profile"
@@ -38,7 +38,6 @@
 					to="/register"
 					label="Se déconnecter"
 					size="lg"
-					@click="logout"
 					class="btn !bg-neutral-800 hover:!bg-neutral-700 dark:!bg-neutral-700 hover:dark:!bg-neutral-800"
 				/>
 			</div>
@@ -69,7 +68,4 @@
 
 <script lang="ts" setup>
 	import type { UserType } from '~/types';
-
-	const { logout, isAuthenticated } = useSanctumAuth();
-	const user = computed(() => useSanctumUser<UserType>().value?.user);
 </script>

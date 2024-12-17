@@ -9,52 +9,22 @@ export default defineNuxtConfig({
 		'@nuxt/ui',
 		'@nuxt/image',
 		'@nuxt/fonts',
-		'nuxt-auth-sanctum',
 		'@nuxtjs/tailwindcss',
 		'dayjs-nuxt',
 		'@pinia/nuxt',
+		'@sidebase/nuxt-auth',
 	],
-	sanctum: {
-		mode: 'cookie',
-		userStateKey: 'sanctum.user.identity',
-		redirectIfAuthenticated: false,
-		redirectIfUnauthenticated: false,
-		endpoints: {
-			csrf: '/sanctum/csrf-cookie',
-			login: '/login',
-			logout: '/logout',
-			user: '/api/user',
-		},
-		csrf: {
-			cookie: 'XSRF-TOKEN',
-			header: 'X-XSRF-TOKEN',
-		},
-		client: {
-			retry: true,
-			initialRequest: true,
-		},
-		redirect: {
-			keepRequestedRoute: false,
-			onLogin: '/',
-			onLogout: '/login',
-			onAuthOnly: '/login',
-			onGuestOnly: '/',
-		},
-		globalMiddleware: {
-			enabled: true,
-			allow404WithoutAuth: false,
-		},
-		logLevel: 3,
-		appendPlugin: false,
-	},
 	runtimeConfig: {
 		public: {
 			baseUrl: process.env.BASE_URL,
 			contactEmail: process.env.CONTACT_EMAIL,
-			sanctum: {
-				baseUrl: process.env.BASE_URL || 'http://localhost:8000',
-			},
 		},
+		passport: {
+			baseUrl: process.env.BASE_URL,
+			clientId: process.env.PASSPORT_CLIENT_ID,
+			clientSecret: process.env.PASSPORT_CLIENT_SECRET,
+		},
+		authSecret: process.env.AUTH_SECRET,
 	},
 	dayjs: {
 		locales: ['fr', 'en'], // Charger les locales nécessaires

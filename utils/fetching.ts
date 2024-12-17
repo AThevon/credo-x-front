@@ -1,11 +1,12 @@
-export default async function fetching (url: string, options: any = {}) {
-	const token = useCookie('XSRF-TOKEN').value || '';
-	const baseUrl = useRuntimeConfig().public.sanctum.baseUrl;
+export default async function fetching(url: string, options: any = {}) {
+	const baseUrl = useRuntimeConfig().passport.baseUrl;
+	const token = useCookie('access_token').value;
 
 	options.headers = {
 		...options.headers,
-		'X-XSRF-TOKEN': token,
+		Authorization: token ? `Bearer ${token}` : '',
+		'Content-Type': 'application/json',
 	};
-	options.credentials = 'include';
+
 	return await $fetch(`${baseUrl}/api${url}`, options);
 }

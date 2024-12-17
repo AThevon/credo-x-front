@@ -91,13 +91,10 @@
 	import { z } from 'zod';
 	import type { FormSubmitEvent } from '#ui/types';
 
-	definePageMeta({
-		sanctum: {
-			excluded: true,
-		},
-	});
+	const toast = useToast();
+	const { signIn } = useAuth();
 
-	// Définir le schéma de validation avec zod
+	// Schéma de validation avec zod
 	const schema = z.object({
 		email: z.string().email('Veuillez entrer un email valide.'),
 		password: z
@@ -107,34 +104,41 @@
 
 	type Schema = z.output<typeof schema>;
 
-	// Définir l'état réactif pour le formulaire
+	// État réactif pour le formulaire
 	const state = reactive({
 		email: '',
 		password: '',
 	});
 
-	const { login, refreshIdentity } = useSanctumAuth();
-	const baseUrl = useRuntimeConfig().public.sanctum.baseUrl;
-	const toast = useToast();
-
 	async function handleLogin(event: FormSubmitEvent<Schema>) {
 		try {
-			await login(event.data);
-			toast.clear();
+			// Utilisation de Nuxt Auth pour se connecter
+			await signIn('laravelpassport', {
+				email: event.data.email,
+				password: event.data.password,
+				redirect: false, // Empêche la redirection automatique
+			});
+
+			toast.add({
+				color: 'green',
+				title: 'Connexion réussie',
+				description: 'Vous êtes maintenant connecté.',
+			});
+
+			// Rediriger ou recharger l'utilisateur
+			await navigateTo('/'); // Redirige vers la page d'accueil
 		} catch (error) {
+			console.error('Login Error:', error);
 			toast.add({
 				color: 'red',
-				title: 'Attention',
-				description: 'Email ou mot de passe incorrect',
-				icon: 'i-octicon-alert-24',
-				timeout: 10000,
+				title: 'Erreur',
+				description: 'Email ou mot de passe incorrect.',
 			});
-			await refreshIdentity();
 		}
 	}
 
 	async function handleGoogleLogin() {
-		window.location.href = `${baseUrl}/auth/google/redirect`;
-		await refreshIdentity();
+		// Redirection OAuth 2.0 via Nuxt Auth
+		await signIn('laravelpassport', { callbackUrl: '/' });
 	}
 </script>

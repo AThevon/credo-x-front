@@ -82,12 +82,6 @@
 	import { z } from 'zod';
 	import fetching from '@/utils/fetching';
 
-	definePageMeta({
-		sanctum: {
-			excluded: true,
-		},
-	});
-
 	// Définir le schéma de validation avec zod
 	const schema = z
 		.object({
