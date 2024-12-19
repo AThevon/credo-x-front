@@ -12,7 +12,6 @@ export default defineNuxtConfig({
 		'@nuxtjs/tailwindcss',
 		'dayjs-nuxt',
 		'@pinia/nuxt',
-		'@sidebase/nuxt-auth',
 	],
 	runtimeConfig: {
 		public: {
@@ -24,11 +23,10 @@ export default defineNuxtConfig({
 			clientId: process.env.PASSPORT_CLIENT_ID,
 			clientSecret: process.env.PASSPORT_CLIENT_SECRET,
 		},
-		authSecret: process.env.AUTH_SECRET,
 	},
 	dayjs: {
-		locales: ['fr', 'en'], // Charger les locales nécessaires
-		defaultLocale: 'fr', // Définit la locale par défaut
+		locales: ['fr', 'en'],
+		defaultLocale: 'fr',
 	},
 	colorMode: {
 		preference: 'light',

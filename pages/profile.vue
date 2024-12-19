@@ -1,7 +1,6 @@
 <template>
 	<div>
 		<h1 class="text-2xl font-bold">Profile</h1>
-      <p v-if="status === 'authenticated'">Bienvenue, {{ data?.user?.name }}</p>
 	</div>
 </template>
 
@@ -9,5 +8,4 @@
 	import type { UserType } from '~/types';
 
 
-	const { data, status } = useAuth();
 </script>

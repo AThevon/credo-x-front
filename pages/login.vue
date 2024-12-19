@@ -90,9 +90,12 @@
 <script setup lang="ts">
 	import { z } from 'zod';
 	import type { FormSubmitEvent } from '#ui/types';
+	import { useUserStore } from '@/stores/UserStore';
 
 	const toast = useToast();
-	const { signIn } = useAuth();
+	const passport = useRuntimeConfig();
+	console.log(passport);
+	const userStore = useUserStore();
 
 	// Schéma de validation avec zod
 	const schema = z.object({
@@ -112,12 +115,25 @@
 
 	async function handleLogin(event: FormSubmitEvent<Schema>) {
 		try {
-			// Utilisation de Nuxt Auth pour se connecter
-			await signIn('laravelpassport', {
-				email: event.data.email,
-				password: event.data.password,
-				redirect: false, // Empêche la redirection automatique
+			const response: any = await $fetch('/api/login', {
+				method: 'POST',
+				body: {
+					email: event.data.email,
+					password: event.data.password,
+				},
 			});
+
+			// Stocke le token dans un cookie sécurisé
+			const token = useCookie('access_token', {
+				maxAge: 60 * 60 * 24 * 7, // 7 jours
+				httpOnly: true, // Non accessible via JS
+				secure: process.env.NODE_ENV === 'production', // HTTPS uniquement en production
+			});
+			token.value = response.access_token;
+
+			// Optionnel : charge les informations utilisateur dans le Pinia
+			const userStore = useUserStore();
+			await userStore.fetchUser();
 
 			toast.add({
 				color: 'green',
@@ -125,8 +141,7 @@
 				description: 'Vous êtes maintenant connecté.',
 			});
 
-			// Rediriger ou recharger l'utilisateur
-			await navigateTo('/'); // Redirige vers la page d'accueil
+			await navigateTo('/');
 		} catch (error) {
 			console.error('Login Error:', error);
 			toast.add({
@@ -138,7 +153,6 @@
 	}
 
 	async function handleGoogleLogin() {
-		// Redirection OAuth 2.0 via Nuxt Auth
-		await signIn('laravelpassport', { callbackUrl: '/' });
+		window.location.href = `${passport.baseUrl}/auth/google/redirect`;
 	}
 </script>
